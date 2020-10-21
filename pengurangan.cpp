@@ -1,4 +1,4 @@
-// pengurangan.cpp untuk melihat perkalian
+// pengurangan.cpp untuk melihat pengurangan
 // 4.999.999.999.999.999.999 − 4.999.999.999.999.999.998 dalam C++
 // compile dengan: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan_01.exe
 // atau g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan.exe
