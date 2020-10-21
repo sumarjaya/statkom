@@ -1,4 +1,4 @@
-// pengurangan.cpp untuk melihat perkalian
+// perkalian.cpp untuk melihat perkalian
 // 111.111.111 x 111.111.111 dalam C++
 // compile dengan: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o perkalian_01.exe
 // atau g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o perkalian_01.exe
