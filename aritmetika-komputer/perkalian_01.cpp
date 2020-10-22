@@ -5,6 +5,8 @@
 // lain yang mendukung C++20. Lakukan:
 // pada GCC: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o perkalian_01.exe
 // atau pada Clang: clang++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o perkalian_01.exe
+// Penulis: I Wayan Sumarjaya
+
 #include <iostream>
 
 int main()
