@@ -1,0 +1,438 @@
+---
+title: "Komputasi Matriks"
+author: "I Wayan Sumarjaya (sumarjaya@unud.ac.id)"
+date: "10/19/2020"
+output: 
+  beamer_presentation:
+    highlight: tango
+    keep_tex: true
+    slide_level: 3 # cause a lot of problem if level > 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,prompt = TRUE,comment='')
+```
+## Topik
+
+- Komputasi Matriks?
+- Aljabar Matriks
+- Efisiensi Komputasi Matriks
+
+--- 
+
+## Aljabar Matriks pada R
+
+- Suatu matriks $X_{n\times p}$ merupakan sistem bilangan dengan $n$ baris dan $p$
+kolom dan biasanya dinyatakan sebagai:
+\begin{equation}
+X =
+\begin{bmatrix}
+  x_{11} & x_{12} & \dotsc & x_{1p}\\
+  x_{21} & x_{22} & \dotsc & x_{2p}\\
+  \vdots & \vdots & \ddots & \vdots\\
+  x_{n1} & x_{n2} & \dotsc & x_{np}\\
+\end{bmatrix}
+= (x_{ij}).
+\end{equation}
+- Matriks dengan satu kolom dan $n$ baris adalah \textbf{vektor kolom} dan matriks
+ dengan satu baris dan $p$ kolom adalah \textbf{vektor baris}.  
+
+--- 
+
+- Kode R berikut akan membuat matriks $4\times 4$:
+```{r}
+# membuat matriks X dengan elemen-eleman bilangan
+# dari 1 sampai dengan 16
+X = matrix(1:16, nrow=4,ncol=4, byrow=TRUE) 
+X
+```  
+
+---
+
+Perhatikan matriks berikut:
+```{r}
+Y = matrix(1:16, nrow=4,ncol=4, byrow= FALSE)
+Y
+```  
+
+---
+
+- Membuat matriks
+```{r}
+Z = matrix(c(23,45,56,88,99,77,11,23,8,10),nrow=5,ncol=2,byrow=TRUE)
+Z
+```
+- Diagonal matriks dapat diakses menggunakan fungsi \texttt{diag}. Kemudian, 
+matriks dengan elemen  bernilai nol selain diagonal disebut 
+\textbf{matriks diagonal}.   
+
+---
+
+### Mengakses diagonal dan membuat matriks diagonal
+
+```{r}
+diag(X) # mengakses diagonal matriks X
+diag(4) # matriks identitas 4 x 4  
+```
+
+---
+
+```{r}
+diag(2,3) # elemen diagonal pada matriks 3 x 3
+diag(c(1,4,7,3),nrow=3,ncol=4) # matriks 3 x 4  
+```
+
+---
+
+```{r}
+diag(2,3,4) # matriks 3 x 4 dengan diagonal 2  
+```
+
+---
+
+### Rank
+- Rank suatu matriks $X$ dinotasikan $\text{rank}(X)$ adalah jumlah maksimum baris
+atau kolom. Bebas linear adalah dari suatu himpunan $h$ baris $x_j$ berarti bahwa
+$\sum_{j = 1}^h c_j x_j = 0$ jika dan hanya jika $c_j = 0$ untuk semua $j$.
+
+```{r}
+qr(X)$rank # mengakses nilai rank matriks  
+```
+
+---
+
+### Teras dan Determinan Matriks
+Teras (\textit{trace}) suatu matriks adalah jumlah elemen-elemen diagonal.
+
+```{r}
+X = matrix(c(4,8,2,7,5,6,4,3,7),nrow=3,ncol=3,byrow = TRUE)
+X
+sum(diag(X)) #teras matriks
+det(X) #determinan matriks  
+```
+
+---  
+
+### Transpos Matriks
+
+```{r}
+t(X)
+t(Y)  
+```
+
+---
+
+### Operasi Dasar Matriks
+
+```{r}
+X = matrix(c(4,5,2,11,23,9,3,7,25),nrow=3,ncol=3,byrow=TRUE);X
+Y = matrix(c(5,6,30,67,22,12,8,9,2),nrow=3,ncol=3,byrow=TRUE);Y
+X + Y # penjumlahan  
+```
+
+---
+
+```{r}
+X^2 # bukan X*X
+X %*% X # X*X
+X %*% Y # perkalian  
+```
+
+---
+
+### Balikan (Inverse) Matriks
+- Balikan matriks dapat dihitung menggunakan fungsi \texttt{solve}.
+
+```{r}
+solve(X) # balikan X
+solve(Y) # balikan Y  
+```
+
+---
+
+### Balikan Rampat (Generalized Inverse)
+
+- Dalam praktik kita mungkin sering menemukan kasus matriks singular, yaitu
+matriks dengan determinan nol (0). Pada kasus ini, kita bisa menggunakan balikan 
+rampat (\textit{generalized inverse}):
+\begin{equation}
+  X X^{-} X = X
+\end{equation}
+
+```{r}
+library(MASS)
+ginv(X)  
+
+```
+
+---
+
+
+```{r}
+ginv(Y)
+ginv(Z)  
+```
+
+---
+
+### Eigennilai dan Eigenvektor
+
+Suatu persamaan berbentuk
+\begin{equation}
+  X\gamma = \lambda\gamma
+\end{equation}
+dengan $\lambda$ disebut eigennilai dan $\gamma$ disebut eigenvektor.
+
+```{r}
+eigen(X)$values # mengakses eigennilai
+eigen(Y)$vectors # mengakses eigenvektor  
+```
+
+---
+
+- Setelah eigennilai ditemukan nilai teras dan determinan matriks dapat 
+dihitung:
+\begin{equation}
+  \text{tr}(X) = \sum_{i = 1}^p \lambda_i
+\end{equation}
+dan
+\begin{equation}
+  \text{det}(X) = \prod_{i = 1}^p \lambda_i
+\end{equation}
+```{r}
+X = matrix(c(4,5,2,11,23,9,3,7,25),nrow=3,ncol=3,byrow=TRUE)
+sum(diag(X)) # teras
+sum(eigen(X)$values) # teras menggunakan eigennilai
+```
+
+---
+
+```{r}
+det(X) # determinan
+prod(eigen(X)$values) # determinan menggunakan perkalian eigennilai
+```
+
+---
+
+### Dekomposisi Spektral
+
+- Dekomposisi spektral suatu matriks adalah representasi matriks dalam 
+  eigennilai dan eigenvektor.
+- Misalkan $X_{p\times p}$ adalah matriks dengan entri bilangan real dan 
+  $\Lambda$ adalah matriks eigennilai dan $V$ adalah matriks eigenvektor. 
+  Matriks
+  \begin{equation}
+    X = V\Lambda V^{-1}.
+  \end{equation}
+  
+---
+
+```{r}
+X = matrix(c(4,5,2,11,23,9,3,7,25),nrow=3,ncol=3,byrow=TRUE); X
+V = eigen(X)$vectors;V
+
+#
+```
+---
+
+```{r}
+L = diag(eigen(X)$values);L
+qr(L)$rank
+V %*% L %*% solve(V) # matriks X
+```
+
+---
+
+## Norma Vektor dan Matriks
+
+- Komputasi matriks sering melibatkan dua norma: norma vektor (_vector
+  norm_) dan norma matriks (_matriks norm_)
+- Misalkan $V$ adalah ruang vektor dan $b$ adalah skalar, keduanya bisa dalam
+   $\mathbb{R}^n$ atau $\mathbb{C}^n$. Misalkan vektor-vektor $x$, $y \in V$.
+   Norma adalah pemetaan $\|\cdot\|:V\rightarrow \mathbb{R}_0^+$ dengan sifat:
+   - $\|bx\| = |b|\|x\|$,
+   - $\|x + y\| \leq \|x\| + \|y\|$,
+   - $\|x\| \geq 0$ dengan $\|x\| = 0$ jika dan hanya jika $x = 0$.
+
+---
+
+- Misalkan $x = (x_1,\dotsc, x_n)^{\textsf{T}} \in \mathbb{R}^n$, $k \geq 1$,
+  dan $k \in \mathbb{R}$. Norma $L_k$ dapat dinyatakan sebagai
+  \begin{equation}
+    \| x \|_k = \left(\sum_{i=1}^n |x_i|^k \right)^{1/k}
+  \end{equation}
+- Beberapa norma vektor:
+  - Norma Manhattan: $\|x\|_1 = \sum_{i=1}^n |x_i|$,
+  - Norma Euclid: $\|x\|_2 = \left(\sum_{i=1}^n |x_i|^2\right)^{1/2} = (x^{\mathsf{T}}x)^{1/2}$
+  - Norma tak berhingga: $\| x\|_{\infty} = \max\{|x_i|_{i=1}^n\}$
+  - Norma Frobenius: $\|x\|_p = (x^{\mathsf{T}}x)^{1/2}$
+  
+---
+
+```{r}
+v = matrix(c(2,3,6),nrow=3,ncol=1);v
+norm(v,type="1") # norma Manhattan
+norm(v,type="F") # norma Euclid/Frobenius
+norm(v,type="I") # norma tak berhingga
+```
+
+---
+
+- Misalkan $U^{n\times p}$ adalah himpunan matriks-matriks berdimensi $n\times p$
+  dan $a$ adalah skalar (real atau kompleks). Ruang $U^{n\times p}$ adalah ruang
+  vektor yang dilengkapi dengan penjumlahan matriks dan perkalian skalar. Misalkan
+  $A, B \in U^{n\times p}$. Norma matriks didefinisikan sebagai pemetaan
+  $\|\cdot\|:U^{n\times p} \rightarrow \mathbb{R}_0^+$ dengan sifat-sifat berikut:
+  - $\|cA|| = |c|\|A\|$,
+  - $\| A + B \| \leq \|A \| + \| B\|$,
+  - $\|A \| \geq 0$, dengan $\|A\| = 0$ jika dan hanya jika $A = 0$.
+  
+---
+
+- Beberapa contoh norma matriks:
+  - Norma satu: $\| A\|_1 = \max_{i \leq j \leq p} \sum_{i=1}^n |a_{ij}|$,
+  - Norma Euclid/spektral: $\|A\|_2 = \sqrt{\lambda_{\max}(A^CA)}$,
+  - Norma tak berhingga: $\|A\| = \max_{1 \leq i \leq n } \sum_{j = 1}^p |a_ij|$,
+  - Norma Frobenius: $\|A\|_F = \sqrt{\sum_{i=1}^j\sum_{j=1}^p |a_{ij}|^2}$.
+  
+```{r}
+X = matrix(c(4,5,2,11,23,9,3,7,25),nrow=3,ncol=3,byrow=TRUE); X
+norm(X,type="O") # norma satu
+norm(X,type="2") # norma Euclid
+```
+
+---
+
+```{r}
+norm(X,type="I") # norma tak berhingga
+norm(X,type="F") # norma Frobenius
+```
+
+---
+
+## Efisiensi dalam Komputasi Matriks
+
+- Kita akan menghitung perkalian matriks berbentuk 
+  $\mathbf{A}\mathbf{B}\mathbf{y}$. 
+```{r}
+## Menghitung perkalian matriks ABy masing-masing elemen
+## terdiri dari bilangan acak (seragam) U(0,1)
+n = 2000
+A = matrix(runif(n*n),n,n)
+B = matrix(runif(n*n),n,n)
+y = runif(n)
+# Perkalian ABy
+system.time(A%*%B%*%y)
+# Perkalian A(By)
+system.time(A%*%(B%*%y))
+```
+
+
+---
+
+
+```{r}
+system.time(sum(A*t(B)))
+```
+
+---
+
+- Apa yang terjadi di sini? Jawabannya terletak pada bagaimana perkalian disusun 
+  pada pada kedua kasus tersebut dan banyak operasi titik kambang 
+  (\textit{floating point operations} atau flop) yang diperlukan. 
+- Mari kita amati lebih jauh apa yang terjadi. 
+  - Pada kasus pertama matriks $\mathbf{AB}$ 
+            dibentuk terlebih dahulu dan matriks yang terbentuk kemudian 
+            dikalikan dengan $\mathbf{y}$. 
+  - Namun, pada kasus kedua vektor $\mathbf{By}$ dibentuk terlebih 
+            dahulu, kemudian hasilnya dikalikan dengan $\mathbf{A}$. Sekarang 
+            kita perlu menghitung berapa banyak operasi titik kambang atau flop 
+            yang diperlukan. 
+
+---
+
+Sebelum membicarakan bagaimana menghitung flop kita lihat contoh sederhana 
+berikut. Perhatikan perkalian matriks
+\begin{equation}
+    \begin{bmatrix}
+        b_{11} & b_{12} & b_{13}\\
+        b_{21} & b_{22} & b_{23}\\
+        b_{31} & b_{32} & b_{33}
+    \end{bmatrix}
+    \begin{bmatrix}
+        y_{11}\\
+        y_{12}\\
+        y_{13}
+    \end{bmatrix}.
+\end{equation}
+
+---
+
+Berapa banyak flop $(+,-,*,/)$ yang diperlukan pada perkalian pada bagian 
+sebelumnya?  Sekarang berapa banyak flop yang diperlukan untuk operasi matriks
+\begin{equation}
+    \begin{bmatrix}
+        a_{11} & a_{12} & a_{13}\\
+        a_{21} & a_{22} & a_{23}\\
+        a_{31} & a_{32} & a_{33}
+    \end{bmatrix}
+    \begin{bmatrix}
+        b_{11} & b_{12} & b_{13}\\
+        b_{21} & b_{22} & b_{23}\\
+        b_{31} & b_{32} & b_{33}
+    \end{bmatrix}?
+\end{equation}
+
+---
+
+Nah, sekarang kalau kita nyatakan dalam $n$ berapakah ``biaya'' untuk melakukan 
+operasi flop untuk membentuk $\mathbf{AB}$? Berapa pula biaya untuk 
+membentuk $\mathbf{By}$? Sekarang, hitung banyak biaya flop untuk menghitung 
+kedua cara menghitung $\mathbf{ABy}$.
+
+---
+
+Sekarang kita akan melihat lagi contoh lain. Misalkan kita akan menghitung teras
+$\text{tr}(\mathbf{AB})$. Misalkan $\mathbf{A}$ adalah matriks berdimensi 
+$10000\times 100$ dan $\mathbf{B}$ adalah matriks berdimensi $100\times 10000$.
+
+```{r}
+## Menghitung teras
+n = 10000
+m = 100
+A = matrix(runif(n*m),n,m)
+B = matrix(runif(n*m),m,n)
+# Membentuk matriks AB dan mengekstrak diagonal, kemudian
+# menjumlahkannya
+system.time(sum(diag(A%*%B)))
+# Menghitung teras menggunakan sifat tr(AB) = tr(BA)
+system.time(sum(diag(B%*%A)))
+```
+
+---
+
+```{r}
+# Menghitung tr(AB) menggunakan sifat tr(AB = sum A_{ij}B_{ji}
+system.time(sum(A*t(B)))
+```
+
+---
+
+Beberapa catatan untuk perhitungan teras di atas:
+
+- Pada metode pertama saat matriks $\mathbf{AB}$ dibentuk, ``biaya'' 
+  flop adalah $2n^2m$, lalu diagonal utama diekstrak dan dijumlahkan.
+- Pada kasus kedua kita menggunakan sifat $\text{tr}(AB) = \text{tr}(BA)$, ``biaya''
+  yang diperlukan adalah $2nm^2$, lalu diagonal utama diekstrak dan 
+  dijumlahkan.
+- Pada ketiga sifat yang digunakan adalah $\text{tr}(\mathbf{AB}) = \sum_{ij}A_{ij}B_{ji}$, dengan      ``biaya'' $2nm$.
+    
+--- 
+
+masalah | dimensi|   flop|    flop ($m = n = p$)
+--------|--------|-------|-------------------
+$x^T y$	|$x,y \in\mathbb{R}^m$| $2m$ | $2m$
+$x y^T$	|$x\in\mathbb{R}^m$, $y \in \mathbb{R}^n$ | $mn$ | $m^2$
+$Ay$	|$A\in\mathbb{R}^{m\times n}$, $x \in \mathbb{R}^n$ | $2mn$ | $2m^2$
+$AB$	|$A\in\mathbb{R}^{m\times n}$, $B\in \mathbb{R}^{n\times p}$ | $2mnp$ | $2m^3$
+
