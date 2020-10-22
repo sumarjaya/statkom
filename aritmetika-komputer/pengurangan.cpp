@@ -1,7 +1,9 @@
-// pengurangan.cpp untuk melihat pengurangan
-// 4.999.999.999.999.999.999 − 4.999.999.999.999.999.998 dalam C++
-// compile dengan: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan_01.exe
-// atau g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan.exe
+// pengurangan.cpp adalah program untuk untuk melihat pengurangan bilangan yang besar
+// 4.999.999.999.999.999.999 − 4.999.999.999.999.999.998 dalam C++. Program ini bisa dikompilasi
+// menggunakan kompiler GNU GCC dan Clang atau kompiler lain yang mendukung C++20:
+// Pada GNU GCC: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan_01.exe
+// pada Clang++: g++ -std=c++2a -Wall -Werror -Og perkalian_01.cpp -o pengurangan.exe
+// Penulis: I Wayan Sumarjaya
 #include <iostream>
 
 int main()
